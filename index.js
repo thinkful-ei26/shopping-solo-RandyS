@@ -4,10 +4,10 @@ const STORE = {
     {name: "milk", checked: true},
     {name: "bread", checked: false} ],
     hideCompleted: false,
+    searchList: [],
 };
 
-console.log(STORE.hideCompleted)
-console.log(...STORE.items)
+console.log(STORE.searchList)
 
 function generateStringHTML(items) {
     return items.map((item, itemIndex) => {
@@ -26,6 +26,29 @@ function generateStringHTML(items) {
     });
 };
 
+function generateSearchHTML(items) {
+    return items.map((item, itemIndex) => {
+        return `
+            <li class="js-item-index-element" data-item-index="${itemIndex}">
+            <span class="shopping-item js-shopping-item ${item.checked ? "shopping-item__checked" : ''}">${item.name}</span>
+            <div class="shopping-item-controls">
+                <button class="shopping-item-toggle js-item-toggle">
+                    <span class="button-label">check</span>
+                </button>
+                <button class="shopping-item-delete js-item-delete">
+                    <span class="button-label">delete</span>
+                </button>
+            </div>
+            </li>
+            
+            <button class="back-to-list-button">
+                <span class="button-label">Back to list</span>
+            </button>
+            `;
+    });
+
+} 
+
 function renderShoppingList() {
     // this function will be responsible for rendering the shopping list in
     // the DOM
@@ -33,10 +56,21 @@ function renderShoppingList() {
 
     if (STORE.hideCompleted) {
         currentList = STORE.items.filter(item => item.checked === false)
+    } else if (STORE.searchList.length > 0) {
+        currentList = STORE.searchList
+        const html = generateSearchHTML(currentList);
+        $('.shopping-list').html(html);
+    } else { 
+        const html = generateStringHTML(currentList);
+        $('.shopping-list').html(html);
     }
 
-    const html = generateStringHTML(currentList);
-    $('.shopping-list').html(html);
+   
+
+
+    
+
+    
     
     
     
@@ -75,6 +109,32 @@ function handleNewItemSubmit() {
     });
     
 };
+
+function handleSearchItemSubmit() {
+    //this function will save input from search form as a variable
+    //it will use that variable to find an item in STORE with the same name
+    //then it should give render a new seach parameter to make a new array only of the same name
+    $('#js-search-list-form').submit(event => {
+        console.log('search button pressed')
+        event.preventDefault();
+        const searchItem = $('.js-search-list-entry').val()
+        console.log(`search item value is ${searchItem}`)
+        STORE.searchList = STORE.items.filter(item => item.name === searchItem)
+        //now have an array of objects with the search object
+        console.log(`STORE.searchList is ${STORE.searchList}`)
+        $('.js-search-list-entry').val('');
+        renderShoppingList();
+        //now push searchResults into search list to render()
+
+
+        // STORE.searchingList = true
+        // console.log(STORE.searchingList)
+        // const searchItem = $('.js-search-list-entry').val()
+        // let searchResults = STORE.items.filter(item => item.name === searchItem)
+        // generateStringHTML
+        
+    });
+}
 
 function handleHideItemsClicked() {
     $('#js-hide-completed-items-checkbox').on('click', '#toggle-filter-completed-items', event => {
@@ -145,6 +205,14 @@ function handleDeleteItemClicked() {
 
     console.log('`handleDeleteItemClicked` ran')
   };
+
+function handleBackToListButtonClicked () {
+    $('.js-shopping-list').on('click', '.back-to-list-button', event => {
+        event.preventDefault();
+        STORE.searchList = 0
+        renderShoppingList();
+  })
+}
   
   // this function will be our callback when the page loads. it's responsible for
   // initially rendering the shopping list, and activating our individual functions
@@ -156,6 +224,8 @@ function handleShoppingList() {
     handleItemCheckClicked();
     handleDeleteItemClicked();
     handleHideItemsClicked();
+    handleSearchItemSubmit();
+    handleBackToListButtonClicked();
     // toggleHideItems();
 }
 
