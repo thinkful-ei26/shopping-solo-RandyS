@@ -74,7 +74,7 @@ function generateChangeItemNameHTML(items) {
             </button>
             `;
     });
-}
+};
 
 function renderShoppingList() {
     let currentList = [...STORE.items]
@@ -95,7 +95,7 @@ function renderShoppingList() {
         const html = generateChangeItemNameHTML(currentList)
         $('.shopping-list').html(html);
     } else { 
-        //dispaly regular list
+        //display regular list
         const html = generateStringHTML(currentList);
         $('.shopping-list').html(html);
     } 
@@ -158,8 +158,7 @@ function handleHideItemsClicked() {
 function toggleCheckedForListItem(itemIndex) {
     console.log("Toggling checked property for item at index " + itemIndex);
     STORE.items[itemIndex].checked = !STORE.items[itemIndex].checked;
-    //
-  }
+};
   
   
 function getItemIndexFromElement(item) {
@@ -247,8 +246,7 @@ function handleShoppingList() {
     handleSearchItemSubmit();
     handleEditItemNameClicked();
     handleBackToListButtonClicked();
-
     // toggleHideItems();
-}
+};
 
 $(handleShoppingList);
